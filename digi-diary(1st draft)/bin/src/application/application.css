@@ -1,0 +1,520 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*COLORS                                                                                                                      */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*
+ * https://www.colorspire.com/rgb-color-wheel/			RGB
+ * white    	:			#FFFFFF
+ * black		:			#000000
+ * gold     	: 			#EEC600
+ * light gold	:			#FAEA9A
+ * aqua			:			#D2FFFF
+ * darkAqua		:			#9DBDBD
+ * light blue	:			#D6E1E9
+ * sky blue		:			#9AD7FF
+ * gray			:			#B5B5B5
+ * light red	:			#FFB0B0
+ * lavender		:			#AD9DBD
+ * 
+ * 
+ * https://rgbacolorpicker.com							RGBA
+ * light purple	:			rgba(179,166,255,1)
+ * purple		:			rgba(128, 78, 245, 1)
+ * green		:			rgba(0,255,0,1)
+ * 
+ */
+ /*============================================================================================================================*/
+ 
+
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*BUTTONS                                                                                                                     */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/* blue button */
+#button1{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-border-color: #D2FFFF;
+	-fx-border-radius: 10;
+	-fx-text-fill: #D2FFFF;
+	-fx-border-width: 1.5;
+	-fx-label-padding: -5;
+	-fx-font-size: 15pt;
+	-fx-effect: dropshadow( gaussian , rgba(179,166,255,1) , 12,0.5,0,0 );
+}
+
+#button1:hover{
+	-fx-border-color: #86CBFF;
+    -fx-text-fill: #86CBFF;
+    -fx-effect: dropshadow( gaussian , rgba(179,166,255,1) , 12,0.5,0,0 );
+}
+
+#button1:pressed{
+	-fx-opacity: 0.75;
+	-fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow( gaussian , rgba(128, 78, 245, 1) , 10,0.3,0,0 );
+}
+
+/* blue button no border */
+#button1_{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-text-fill: #D2FFFF;
+	-fx-label-padding: -5;
+	-fx-font-size: 15pt;
+	-fx-underline: true;
+	-fx-effect: dropshadow( gaussian , rgba(179,166,255,1) , 12,0.5,0,0 );
+}
+
+#button1_:hover{
+    -fx-text-fill: #86CBFF;
+    -fx-effect: dropshadow( gaussian , rgba(179,166,255,1) , 12,0.5,0,0 );
+}
+
+#button1_:pressed{
+	-fx-opacity: 0.75;
+    -fx-text-fill: gray;
+    -fx-effect: dropshadow( gaussian , rgba(128, 78, 245, 1) , 10,0.3,0,0 );
+}
+
+#button1_1{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-text-fill: #FFD2D2;
+	-fx-label-padding: -25;
+	-fx-font-size: 15pt;
+	-fx-underline: true;
+	-fx-effect: dropshadow( gaussian , rgba(255, 166, 166, 1) , 12,0.5,0,0 );
+}
+
+#button1_1:hover{
+    -fx-text-fill: #FF8787;
+    -fx-effect: dropshadow( gaussian , rgba(255, 166, 166, 1) , 12,0.5,0,0 );
+}
+
+#button1_1:pressed{
+	-fx-opacity: 0.75;
+    -fx-text-fill: gray;
+    -fx-effect: dropshadow( gaussian , rgba(128, 78, 245, 1) , 10,0.3,0,0 );
+}
+
+/* green button */
+#button2{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-border-color: #95FF91;
+	-fx-border-radius: 10;
+	-fx-text-fill: #95FF91;
+	-fx-border-width: 1.5;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(0,255,0,1) , 12,0.5,0,0 );
+}
+
+#button2:hover{
+	-fx-border-color: #12CD0B;
+    -fx-text-fill: #12CD0B;
+    -fx-effect: dropshadow( gaussian , rgba(0,255,0,1) , 12,0.5,0,0 );
+}
+
+#button2:pressed{
+	-fx-opacity: 0.75;
+	-fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow( gaussian , rgba(128, 78, 245, 1) , 8,0.3,0,0 );
+}
+
+/* red button */
+#button3{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-border-color: #FFA9A9;
+	-fx-border-radius: 10;
+	-fx-text-fill: #FFA9A9;
+	-fx-border-width: 1.5;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(255,0,0,1) , 12,0.5,0,0 );
+}
+
+#button3:hover{
+	-fx-border-color: #CB7676;
+    -fx-text-fill: #CB7676;
+    -fx-effect: dropshadow( gaussian , rgba(255,0,0,1) , 12,0.5,0,0 );
+}
+
+#button3:pressed{
+	-fx-opacity: 0.75;
+	-fx-border-color: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow( gaussian , rgba(128, 78, 245, 1) , 10,0.3,0,0 );
+}
+
+/* white button */
+#button4{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-border-color: WHITE;
+	-fx-border-radius: 10;
+	-fx-text-fill: WHITE;
+	-fx-border-width: 1.5;
+	-fx-font-size: 15pt;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 12,0.5,0,0 );
+}
+
+#button4:hover{
+	-fx-border-color: WHITE;
+    -fx-text-fill: WHITE;
+    -fx-effect: dropshadow( gaussian , rgba(184, 172, 255, 0.8) , 12,0.5,0,0 );
+}
+
+#button4:pressed{
+	-fx-opacity: 0.75;
+	-fx-border-color: gray;
+    -fx-text-fill: gray;
+    -fx-effect: dropshadow( gaussian , rgba(128, 78, 245, 1) , 10,0.3,0,0 );
+}
+
+#button4_1{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-text-fill: WHITE;
+	-fx-font-size: 18pt;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 12,0.2,0,0 );
+}
+
+/* red button no border */
+#button5{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-text-fill: WHITE;
+	-fx-font-size: 15pt;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 12,0.5,0,0 );
+}
+
+/* red button */
+#button4_2{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-border-color: #D7B9BF;
+	-fx-border-radius: 10;
+	-fx-text-fill: #D7B9BF;
+	-fx-border-width: 1.5;
+	-fx-font-size: 15pt;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(253, 118, 145, 1) , 12,0.55,0,0 );
+}
+
+#button4_2:hover{
+	-fx-border-color: #FFDCE4;
+    -fx-text-fill: #FFDCE4;
+    -fx-effect: dropshadow( gaussian , rgba(255, 217, 217, 1) , 12,0.6,0,0 );
+}
+
+#button4_2:pressed{
+	-fx-opacity: 0.75;
+	-fx-border-color: gray;
+    -fx-text-fill: gray;
+    -fx-effect: dropshadow( gaussian , rgba(255, 130, 130, 1) , 10,0.3,0,0 );
+}
+
+/* red button */
+#button4_3{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-border-color: #BDC0D2;
+	-fx-border-radius: 10;
+	-fx-text-fill: #BDC0D2;
+	-fx-border-width: 1.5;
+	-fx-font-size: 15pt;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(253, 118, 145, 1) , 12,0.55,0,0 );
+}
+
+#button4_3:hover{
+	-fx-border-color: #FFDCE4;
+    -fx-text-fill: #FFDCE4;
+    -fx-effect: dropshadow( gaussian , rgba(255, 217, 217, 1) , 12,0.6,0,0 );
+}
+
+#button4_3:pressed{
+	-fx-opacity: 0.75;
+	-fx-border-color: gray;
+    -fx-text-fill: gray;
+    -fx-effect: dropshadow( gaussian , rgba(255, 130, 130, 1) , 10,0.3,0,0 );
+}
+
+/* red button */
+#button4_3_5{
+	-fx-background-color: transparent;
+	-fx-background-radius: 40;
+	-fx-border-color: #BDC0D2;
+	-fx-border-radius: 10;
+	-fx-text-fill: #BDC0D2;
+	-fx-border-width: 1.5;
+	-fx-font-size: 15pt;
+	-fx-label-padding: -5;
+	-fx-effect: dropshadow( gaussian , rgba(253, 118, 145, 1) , 12,0.2,0,0 );
+}
+
+#button4_3_5:hover{
+	-fx-border-color: #FFDCE4;
+    -fx-text-fill: #FFDCE4;
+    -fx-effect: dropshadow( gaussian , rgba(255, 217, 217, 1) , 12,0.2,0,0 );
+}
+
+#button4_3_5:pressed{
+	-fx-opacity: 0.75;
+	-fx-border-color: gray;
+    -fx-text-fill: gray;
+    -fx-effect: dropshadow( gaussian , rgba(255, 130, 130, 1) , 10,0.3,0,0 );
+}
+/*============================================================================================================================*/
+
+
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*LABELS                                                                                                                      */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+#label1{
+	-fx-font-size: 15pt;
+	-fx-halignment: center;
+	-fx-font-family: "monospaced";
+	-fx-text-fill: #D2FFFF;
+	-fx-effect: dropshadow( gaussian , rgba(179,166,255,1) , 10,0.5,0,0 );
+}
+
+#label2{
+	-fx-font-size: 18pt;
+	-fx-font-family: "Arial";
+	-fx-text-fill: WHITE;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 12,0.2,0,0 );
+}
+
+#label2_1{
+	-fx-font-size: 18pt;
+	-fx-font-family: "Arial";
+	-fx-text-fill: #00D20E;
+	-fx-underline: true;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 12,0.2,0,0 );
+}
+
+#labelInvalidPass1{
+	-fx-font-size: 12pt;
+	-fx-font-family: "Arial";
+	-fx-text-fill: RED;
+	-fx-effect: dropshadow( gaussian , rgba(255,0,0,1) , 12,0,0,0 );
+}
+/*============================================================================================================================*/
+
+
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*TEXTFIELDS                                                                                                                  */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+#textfield1{
+	-fx-background-color: transparent;
+	-fx-opacity: 1;
+	-fx-border-color: white;
+	-fx-border-radius: 10;
+	-fx-border-width: 1.5;
+	-fx-text-fill: white;
+	-fx-wrap-text: TRUE;
+	-fx-font-size: 15pt;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 10,0.3,0,0 );
+}
+
+#textfield2{
+	-fx-background-color: transparent;
+	-fx-opacity: 1;
+	-fx-text-fill: white;
+	-fx-wrap-text: TRUE;
+	-fx-font-size: 15pt;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 10,0.1,0,0 );
+	
+}
+
+#textfield3{
+	-fx-background-color: transparent;
+	-fx-opacity: 1;
+	-fx-border-color: gray;
+	-fx-border-radius: 10;
+	-fx-border-width: 1;
+	-fx-text-fill: white;
+	-fx-wrap-text: TRUE;
+	-fx-font-size: 15pt;
+	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 10,0.3,0,0 );
+}
+
+/* makes the background or the text box itself transparent */
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+}
+
+/* set transparency to the background of the bar */
+.scroll-bar
+{
+  -fx-background-color: transparent;
+}
+
+/* the aesthetics of the scroll bar's thumb */
+.scroll-bar .thumb{
+	-fx-opacity: 0.1;
+}
+
+/* the bar moves */
+.scroll-bar .track
+{
+  -fx-stroke-width: 1;
+  -fx-stroke: -c-dark-glass;
+  -fx-arc-width: 16px;
+  -fx-arc-height: 16px;
+  -fx-fill: transparent;
+}
+
+/* user can scroll by dragging text up and down */
+.list-view, .scroll-pane, .scroll-pane > .viewport
+{
+  -fx-background-color: transparent;
+}
+/*============================================================================================================================*/
+
+
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*SHAPES                                                                                                                      */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+#rect1{
+	-fx-fill: black;
+	-fx-opacity: 0.5;
+}
+#rect1_1{
+	-fx-fill: #3C3C3C;
+	-fx-opacity: 0.85;
+}
+#rect1_2{
+	-fx-fill: #FF4B57;
+	-fx-opacity: 0.75;
+	-fx-effect: dropshadow( gaussian , rgba(214, 227, 255, 1) , 3,0.2,0,0 );
+}
+#rect1_3{
+	-fx-fill: transparent;
+	-fx-opacity: 0.75;
+	-fx-stroke: #FF4B57;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(214, 227, 255, 1) , 3,0.2,0,0 );
+}
+
+#rect1_4{
+	-fx-fill: #3C3C3C;
+	-fx-opacity: 0.75;
+	-fx-stroke: #FF4B57;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(214, 227, 255, 1) , 3,0.2,0,0 );
+}
+
+#rect2{
+	-fx-fill: transparent;
+	-fx-opacity: 1;
+	-fx-stroke: gray;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(210,255,255,1) , 30,0.8,0,0 );
+}
+
+#rect3{
+	-fx-fill: transparent;
+	-fx-opacity: 1;
+	-fx-stroke: gray;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 30,0.8,0,0 );
+}
+
+#rect3_1{
+	-fx-fill: transparent;
+	-fx-opacity: 1;
+	-fx-stroke: gray;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 30,0.8,0,0 );
+}
+
+#rect3_2{
+	-fx-fill: transparent;
+	-fx-opacity: 0.5;
+	-fx-stroke: red;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 30,0.8,0,0 );
+}
+
+#rect4{
+	-fx-fill: transparent;
+	-fx-opacity: 1;
+	-fx-stroke: gray;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(224,188,255,1) , 30,0.8,0,0 );
+}
+/*============================================================================================================================*/ 
+ 
+
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*DROPDOWNS                                                                                                                   */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+#dropdown1{
+	-fx-background-color: transparent;
+}
+/* color of the actual menu itself */
+.choice-box .context-menu { -fx-background-color: transparent; -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 5,0.2,0,0 ); }
+/* color of the text for menu choices */
+.choice-box .menu-item:focused { -fx-border-color: #FFAEB3; -fx-border-radius: 10; -fx-background-color: transparent;
+	-fx-effect: dropshadow( gaussian , rgba(255,174,179,1) , 2,0.2,0,0 ); }
+.choice-box .label{-fx-text-fill:transparent}
+.choice-box .menu-item > .label { -fx-text-fill: white; }
+.choice-box .menu-item:focused > .label { -fx-text-fill: white; -fx-text-alignment: center }
+ /*============================================================================================================================*/ 
+ 
+ 
+/*--------------------------------------------------------------------------------------------------------------------------- */
+/*SLIDERS                                                                                                                     */
+/*--------------------------------------------------------------------------------------------------------------------------- */
+#slider1{
+	-fx-pref-width:250pt;
+}
+
+.slider .thumb{ 
+	-fx-background-color: white;
+	-fx-opacity: 0.45;
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 12,0.5,0,0 );
+}
+
+.slider .track{ 
+	-fx-background-color: #FFA4A4;
+	-fx-opacity: 0.45;
+	-fx-effect: dropshadow( gaussian , rgba(255, 92, 92, 0.8) , 12,0.5,0,0 );
+	
+}
+ /*============================================================================================================================*/ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
