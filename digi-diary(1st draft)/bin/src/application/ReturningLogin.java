@@ -84,7 +84,7 @@ public class ReturningLogin implements ProgramMethodInt{
 		
 		//set up nodes
 		Label successful = label("New password created successfully!",0,0,"label2_1",0,0,550,100,null,null,null,null); successful.setStyle("-fx-underline: true;");
-		Label enterPass = label("Enter default password: ",0,0,"label2",0,0,550,100,null,null,null,null);
+		Label enterPass = label("Enter chosen password: ",0,0,"label2",0,0,550,100,null,null,null,null);
 		Label invalidPass = label("Password was incorrect.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
 		textBox = passwordField("", 300,50,300,50,"textfield1");
 		textBoxShow = textField("", 300,50,300,50,"textfield1");
