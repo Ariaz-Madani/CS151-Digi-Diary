@@ -19,6 +19,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Class FirstTimeLogin contains methods that will be called to edit the GUI with features regarding the user's first time logging in.
+ */
 public class FirstTimeLogin implements ProgramMethodInt{
 	
 	//audio for click sound when button is pressed
@@ -78,10 +81,10 @@ public class FirstTimeLogin implements ProgramMethodInt{
 		//set up nodes
 		Label enterPass = label("Enter default password: ",0,0,"label2",0,0,550,100,null,null,null,null);
 		Label invalidPass = label("Password was incorrect.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
-		textBox = passwordField("", 300,50,300,50,"textfield1");
-		textBoxShow = textField("", 300,50,300,50,"textfield1");
+		textBox = passwordField("", 300,50,300,50,"textfield3");
+		textBoxShow = textField("", 300,50,300,50,"textfield3");
 		Button showPass = button("Show",0,0,"button1_",120,50,120,50,null,null,null,null);
-		Button signIn = button("Sign in", 0,0,"button4",150,50,150,50,null,null,null,null);
+		Button signIn = button("Sign in", 0,0,"button4_3",150,50,150,50,null,null,null,null);
 		//button functions
 		showPass.setOnAction(new EventHandler<ActionEvent> () {
 			@Override
@@ -187,13 +190,13 @@ public class FirstTimeLogin implements ProgramMethodInt{
 		questionBlank = label("Security question cannot be blank.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
 		answerBlank = label("Answer cannot be blank.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
 		passwordInvalid = label("Invalid password combination.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
-		createQuestion = textField("", 600,50,600,50,"textfield1");
-		answerQuestion = textField("", 600,50,600,50,"textfield1");
-		textBoxShow = textField("", 300,50,300,50,"textfield1");
-		textBoxShow2 = textField("", 300,50,300,50,"textfield1");
-		textBox = passwordField("", 300,50,300,50,"textfield1");
-		textBox2 = passwordField("", 300,50,300,50,"textfield1");
-		confirm = button("Confirm", 0,0,"button4",150,50,150,50,null,null,null,null);
+		createQuestion = textField("", 600,50,600,50,"textfield3");
+		answerQuestion = textField("", 600,50,600,50,"textfield3");
+		textBoxShow = textField("", 300,50,300,50,"textfield3");
+		textBoxShow2 = textField("", 300,50,300,50,"textfield3");
+		textBox = passwordField("", 300,50,300,50,"textfield3");
+		textBox2 = passwordField("", 300,50,300,50,"textfield3");
+		confirm = button("Confirm", 0,0,"button4_3",150,50,150,50,null,null,null,null);
 		showPass = button("Show",0,0,"button1_",120,50,120,50,null,null,null,null);
 		showPass2 = button("Show",0,0,"button1_",120,50,120,50,null,null,null,null);
 		
@@ -219,7 +222,7 @@ public class FirstTimeLogin implements ProgramMethodInt{
 					cp = textBoxShow2.getText();
 				//correct default pass or else set red text
 				//user cannot use default password again as their new password and password can be empty or an empty space
-				if (!cp.equals("p") && cp.equals(snp)) {			//dont know if should add ||cp.equals("P"); instructions are very unclear
+				if (!cp.equals("p") && cp.equals(snp) && !cq.isEmpty() && !aq.isEmpty()) {			//dont know if should add ||cp.equals("P"); instructions are very unclear
 					if (!cq.contains("?"))	//format any missing punctuation
 						cq = cq + "?";
 					
