@@ -7,15 +7,20 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+/**
+ * Class Main launches the Digi-Diary application with a GUI display specific to whether it's the user's first time or not.
+ * 
+ * @author 		Alex Wong
+ * @author 		Hayden Tu
+ * @author 		Ariaz Madani
+ */
 public class Main extends Application implements ProgramMethodInt {
 	
 	@Override
@@ -28,7 +33,7 @@ public class Main extends Application implements ProgramMethodInt {
 			
 			
 			//setting up lobby music
-			MediaPlayer mediaPlayer = mediaPlayer("src/music/lofi-hip-hop-radio-cyberpunk-city-2077_GuCMTEp6.mp3", 0.05);
+			MediaPlayer mediaPlayer = mediaPlayer("src/music/Idealism - Controlla [1 Hour].mp3", 0.05);
 			mediaPlayer.setOnEndOfMedia(new Runnable() {
 			       public void run() {
 			    	   mediaPlayer.seek(Duration.ZERO);
