@@ -345,6 +345,15 @@
 	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 10,0.3,0,0 );
 }
 
+#textfield3_1{
+	-fx-background-color: transparent;
+	-fx-opacity: 1;
+	-fx-text-fill: white;
+	-fx-wrap-text: TRUE;
+	-fx-font-size: 15pt;
+	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 10,0.3,0,0 );
+}
+
 /* makes the background or the text box itself transparent */
 .text-area .scroll-pane .content{
     -fx-background-color: transparent;
@@ -459,6 +468,17 @@
 #dropdown1{
 	-fx-background-color: transparent;
 }
+
+#dropdown2{
+	-fx-background-color: transparent;
+	-fx-max-width: 1000000;
+	-fx-max-height: 1000000;
+	-fx-font-size:20;
+	-fx-stroke: gray;
+	-fx-stroke-width: 1;
+	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 10,0.4,0,0 );
+}
+
 /* color of the actual menu itself */
 .choice-box .context-menu { -fx-background-color: transparent; -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 5,0.2,0,0 ); }
 /* color of the text for menu choices */
@@ -467,6 +487,21 @@
 .choice-box .label{-fx-text-fill:transparent}
 .choice-box .menu-item > .label { -fx-text-fill: white; }
 .choice-box .menu-item:focused > .label { -fx-text-fill: white; -fx-text-alignment: center }
+
+				/*-----------------------------------------------------------------------------------------*/
+/* color of the actual menu itself */
+.combo-box-popup .list-cell { -fx-background-color: transparent; -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 5,0.2,0,0 ); 
+	-fx-effect: dropshadow( gaussian , rgba(255, 85, 85, 1) , 10,0.3,0,0 ); -fx-text-fill: white;
+}
+/* color of the text for menu choices */
+.combo-box-popup .list-cell:hover {    
+    -fx-border-color: #FFAEB3; -fx-border-radius: 10; -fx-background-color: transparent;
+	-fx-effect: dropshadow( gaussian , rgba(255,174,179,1) , 2,0.2,0,0 );
+}
+/* sets the color of the SELECTED text */
+.combo-box .cell:selected {
+    -fx-text-fill: white;
+}
  /*============================================================================================================================*/ 
  
  
@@ -474,7 +509,7 @@
 /*SLIDERS                                                                                                                     */
 /*--------------------------------------------------------------------------------------------------------------------------- */
 #slider1{
-	-fx-pref-width:250pt;
+	-fx-pref-width: 250; -fx-pref-height: 25;
 }
 
 .slider .thumb{ 
