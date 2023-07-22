@@ -8,8 +8,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -150,7 +153,7 @@ public interface ProgramMethodInt extends ProgramValueInt{
 	 * @param ID				any preset css customize format style want added
 	 * @return					the customized textArea
 	 */
-	public default TextArea textArea(String name, int minWidth, int minHeight, int maxWidth, int maxHeight, String ID) {
+	public default TextArea textArea(String name, double minWidth, double minHeight, double maxWidth, double maxHeight, String ID) {
 		TextArea textArea = new TextArea(name);
 		if (minWidth != 0)
 			textArea.setMinWidth(minWidth);
@@ -280,178 +283,7 @@ public interface ProgramMethodInt extends ProgramValueInt{
 	//add to root unimplemented method
 	public void add(Object obj);
 	
-	/**
-	 * Method to add object to groups nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(Group group,Object obj) {
-		group.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to panes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(Pane pane,Object obj) {
-		pane.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to borderpanes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(BorderPane pane,Object obj) {
-		pane.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to gridpanes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(GridPane pane,Object obj) {
-		pane.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to stackpanes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(StackPane pane,Object obj) {
-		pane.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to flowpanes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(FlowPane pane,Object obj) {
-		pane.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to tilepanes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(TilePane pane,Object obj) {
-		pane.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to anchorpanes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(AnchorPane pane,Object obj) {
-		pane.getChildren().add((Node) obj);
-	}
-	
-	/**
-	 * Method to add object to vboxes nice and clean (code wise)
-	 * @param group				object getting addition
-	 * @param obj				node to be added
-	 */
-	public default void add(VBox vbox,Object obj) {
-		vbox.getChildren().add((Node) obj);
-	}
-	
-	
-	
-	/**
-	 * Method to create vBox object without size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
-	 */
-	public default VBox vBox(int space, Pos position, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		VBox VBox = new VBox(space);
-		VBox.setAlignment(position);
-		if (x != null) {
-			VBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			VBox.prefHeightProperty().bind(y);
-		}
-		return VBox;
-	}
-	
-	/**
-	 * Method to create vBox object with minimum size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param minWidth			the minimum width
-	 * @param minHeight			the maximum height
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
-	 */
-	public default VBox vBoxMin(int space, Pos position, double minWidth, double minHeight, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		VBox VBox = new VBox(space);
-		VBox.setAlignment(position);
-		VBox.setMinSize(minWidth, minHeight);
-		if (x != null) {
-			VBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			VBox.prefHeightProperty().bind(y);
-		}
-		return VBox;
-	}
-	
-	/**
-	 * Method to create vBox object with maximum size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param maxWidth			the maximum width
-	 * @param maxHeight			the maximum height
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
-	 */
-	public default VBox vBoxMax(int space, Pos position, double maxWidth, double maxHeight, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		VBox VBox = new VBox(space);
-		VBox.setAlignment(position);
-		VBox.setMaxSize(maxWidth, maxHeight);
-		if (x != null) {
-			VBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			VBox.prefHeightProperty().bind(y);
-		}
-		return VBox;
-	}
-	
-	/**
-	 * Method to create vBox object with preferred size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param prefWidth			the preferred width
-	 * @param prefHeight		the preferred height
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
-	 */
-	public default VBox vBoxPref(int space, Pos position, double prefWidth, double prefHeight, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		VBox VBox = new VBox(space);
-		VBox.setAlignment(position);
-		VBox.setPrefSize(prefWidth, prefHeight);
-		if (x != null) {
-			VBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			VBox.prefHeightProperty().bind(y);
-		}
-		return VBox;
-	}
-	
+
 	/**
 	 * Method assigns values to set up VBox that is defined in interface
 	 * @param vBox				the container to be edited
@@ -480,157 +312,45 @@ public interface ProgramMethodInt extends ProgramValueInt{
 			vBox.prefWidthProperty().bind(x);
 		if (y != null) 
 			vBox.prefHeightProperty().bind(y);	
-	}
-	
+}
+
 	/**
-	 * Method to create hBox object without size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
+	 * Method displayLocalDateTime is used to either display a continiously updating date, time, or both on the GUI application.
+	 * @param timeAndDate		textField that will list both time and/or date
+	 * @param dateAndOrTime		"date" = just display date, "time" = just display time, "both" = display both
 	 */
-	public default HBox hBox(int space, Pos position, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		HBox HBox = new HBox(space);
-		HBox.setAlignment(position);
-		if (x != null) {
-			HBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			HBox.prefHeightProperty().bind(y);
-		}
-		return HBox;
-	}
-	
-	/**
-	 * Method to create hBox object with minimum size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param minWidth			the minimum width
-	 * @param minHeight			the maximum height
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
-	 */
-	public default HBox hBoxMin(int space, Pos position, double minWidth, double minHeight, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		HBox HBox = new HBox(space);
-		HBox.setAlignment(position);
-		HBox.setMinSize(minWidth, minHeight);
-		if (x != null) {
-			HBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			HBox.prefHeightProperty().bind(y);
-		}
-		return HBox;
-	}
-	
-	/**
-	 * Method to create hBox object with maximum size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param maxWidth			the maximum width
-	 * @param maxHeight			the maximum height
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
-	 */
-	public default HBox hBoxMax(int space, Pos position, double maxWidth, double maxHeight, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		HBox HBox = new HBox(space);
-		HBox.setAlignment(position);
-		HBox.setMaxSize(maxWidth, maxHeight);
-		if (x != null) {
-			HBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			HBox.prefHeightProperty().bind(y);
-		}
-		return HBox;
-	}
-	
-	/**
-	 * Method to create hBox object with preferred size restrictions nice and clean (code wise)
-	 * @param space				space between added objects
-	 * @param position			position to be set in box
-	 * @param prefWidth			the preferred width
-	 * @param prefHeight		the preferred height
-	 * @param x					bind amount to be resized in x
-	 * @param y					bind amount to be resized in y
-	 * @return					the customized vBox
-	 */
-	public default HBox hBoxPref(int space, Pos position, double prefWidth, double prefHeight, ObservableValue<? extends Number> x, ObservableValue<? extends Number> y) {
-		HBox HBox = new HBox(space);
-		HBox.setAlignment(position);
-		HBox.setPrefSize(prefWidth, prefHeight);
-		if (x != null) {
-			HBox.prefWidthProperty().bind(x);
-		}
-		if (y != null) {
-			HBox.prefHeightProperty().bind(y);
-		}
-		return HBox;
-	}
-	
-	/**
-	 * Method getFileContent will get content from specified file in the form of an arraylist
-	 * @param file				the file to retrieve content from
-	 */
-	public default ArrayList<String> getFileContent(File file) {
-		ArrayList<String> list = new ArrayList<>();
-		
-		try {
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
+	public default void displaylocalDateTime(TextField timeAndDate, String dateAndOrTime) {
+		boolean off = false;		//boolean variable to ensure thread keeps running indefinitely
+		Thread thread = new Thread(() -> {
+			SimpleDateFormat dateTime = null;
 			
-			String line = br.readLine();
-			String str = line;
-			while (line != null) {		// while line is not null = content remaining = read all till the end of file
-				if (line.isEmpty()) {	// if line is empty, add that string as an index and reset String str
-					list.add(str);
-					str = "";
-				}
-				else {
-					str = str + " " + line;		//if not empty, keep adding to String str
-				}
+			if (dateAndOrTime.equals("date")) {							//if just want to display date
+				dateTime = new SimpleDateFormat("yyyy/MM/dd");
+			}
+			else if (dateAndOrTime.equals("time")) {					//if just want to display time
+				dateTime = new SimpleDateFormat("HH:mm:ss");
+			}
+			else if (dateAndOrTime.equals("both")) {					//if want to display both
+				dateTime = new SimpleDateFormat("yyyy/MM/dd     	HH:mm:ss");
+			}
+			
+			while (off == false) {		//the while loop that will keep updating the textfield; this method can be more specific in wanting label or textfield in its parameters but not for this proj
+				try {
+					Thread.sleep(1000);			//1000 milisecond convets to 1 second and will check/update after every second
+					
+				} catch(Exception e) {e.printStackTrace();}
 				
-				line = br.readLine();	//reads the next line
-				if (line == null) {		//**if next line is the end, add the finished string to the arraylist before exiting loop
-					list.add(str);
-				}
+				String currentDateTime = dateTime.format(new Date());		//get the current update date/time
+				
+				Platform.runLater(() -> {								//runs as a separate task after running main program
+					timeAndDate.setText(currentDateTime);				//update the specified field
+				});
 			}
-			
-			br.close();
-			fr.close();
-		} 
-		catch (IOException e) {e.printStackTrace();}
-		
-		return list;
+		});
+		thread.setDaemon(true);		//this will make sure the thread closes when application closes by user
+		thread.start();				//start the thread/run process
 	}
 	
-	/**
-	 * Method getFileContent will get content from specified file in the form of an arraylist
-	 * @param file				the file to retrieve content from
-	 * @param list				the list of content
-	 */
-	public default void saveContent(File file, ArrayList<String> list) {
-		try{
-			FileWriter fw = new FileWriter(file);
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(bw);
-			
-			clearFile(file);
-			
-			for (int i = 0; i < list.size(); i++) {
-				pw.write(list.get(i));
-				pw.write("");
-			}
-			
-			pw.close();
-			bw.close();
-			fw.close();
-		}
-		catch (IOException e) {e.printStackTrace();}
-	}
 	
 	/**
 	 * Method clearFile will reset a specified file's content
@@ -648,6 +368,113 @@ public interface ProgramMethodInt extends ProgramValueInt{
 	    catch(Exception exception){
 	        System.out.println(exception);
 	    }
+	}
+	
+	/**
+	 * Method getFileContent will get content from specified file in the form of an arraylist
+	 * @param file				the file to retrieve content from
+	 * @return content			the content of the file
+	 */
+	public default String getFileContent(File file) {
+		String content = "";
+		
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			
+			String line = br.readLine();
+			int tick = 0;
+			while (line != null) {		// while line is not null = content remaining = read all till the end of file
+				if (!line.isEmpty()) {		//empty line = indent twice
+					if (tick == 0) {
+						content = line;
+						tick = 1;
+					}
+					else {
+						content = content + "\n" + line;
+					}
+				}
+				else {						//not empty line but new line = indent once
+					content = content + "\n\n";
+				}
+				line = br.readLine();		//read next line
+			}
+			
+			br.close();
+			fr.close();
+		} 
+		catch (IOException e) {e.printStackTrace();}
+		
+		return content;
+	}
+	
+	/**
+	 * Method findFile will return a list of file entries who contain the specified line of text user wants to find.
+	 * @param str		the string of text that user wants found
+	 * @param mode		specifies if files are being searching from deleted folder or saved folder
+	 * @return list		the list of entires that fit the search criteria
+	 */
+	public default ArrayList<String> findFile(String text, String mode) {
+		ArrayList<String> list = new ArrayList<>();
+		
+		//get a list of ALL entries of specified folder
+		if (mode.equals("deleted")) {		//recovery mode
+			try {
+				FileReader fr = new FileReader(deletedFile);
+				BufferedReader br = new BufferedReader(fr);
+				
+				String line = br.readLine();
+				while (line != null) {
+					list.add("src/fileDB/deletedFiles/" + line);		//list of paths to all deleted files
+					line = br.readLine();
+				}
+				
+				br.close();
+				fr.close();
+			}
+			catch(IOException e) {e.printStackTrace();}
+		}
+		else {		//search for old entry mode
+			try {
+				FileReader fr = new FileReader(savedFile);
+				BufferedReader br = new BufferedReader(fr);
+				
+				String line = br.readLine();
+				while (line != null) {
+					list.add("src/fileDB/savedFiles/" + line);			//list of paths to all saved files
+					line = br.readLine();
+				}
+				
+				br.close();
+				fr.close();
+			}
+			catch(IOException e) {e.printStackTrace();}
+		}
+		
+		//run through each and every file in specified folder/list and delete those that don't contain user's desired text
+		for (int i = 0; i < list.size(); i++) {
+			String str = list.get(i);
+			File file = new File(str);		//make a file with the path
+			
+			if (mode.equals("deleted")) {
+				str = str.replace("src/fileDB/deletedFiles/", "");
+			}
+			else {
+				str = str.replace("src/fileDB/savedFiles/", "");
+			}
+			list.remove(i);
+			list.add(i, str);		//convert back to just the file name; this is the format that the dropBoxMenu will read in
+			
+			if (!file.toString().contains("null") && str.contains(text)) {
+				str = str + getFileContent(file);		//get a string of the title + the file's content
+			}
+			else {				//remove entry from the list if it doesn't contain user's specified text
+				list.remove(i);
+				i--;
+			}
+		}
+		
+		return list;
 	}
 }
 
