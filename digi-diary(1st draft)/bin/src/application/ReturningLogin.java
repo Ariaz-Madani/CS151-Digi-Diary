@@ -17,6 +17,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.media.MediaPlayer;
 
+/**
+ * Class ReturningLogin contains methods that will be called to edit the GUI with features regarding the user's returning login.
+ */
 public class ReturningLogin implements ProgramMethodInt{
 	
 	//audio for click sound when button is pressed
@@ -77,7 +80,7 @@ public class ReturningLogin implements ProgramMethodInt{
 	 * Method setUpRL sets up the login page for returning user with set unique password.
 	 * RL = Returning Login (acronym)
 	 * After successfully signing in, it will call method setUpJW from class JournalWorkspace.
-	 * @param tF		true=display label and option1 display; false=display option2 display
+	 * @param yesNoBack		"yes", "no", "back", "cancel" will all generate different background displays appropriate to the prior decision
 	 */
 	public void setUpRL(String yesNoBack) {
 		if (yesNoBack.equals("yes")) 		//plays display for changed password forced back to log in page
@@ -86,8 +89,12 @@ public class ReturningLogin implements ProgramMethodInt{
 			resetPage("src/background display/OPENING.mp4");
 		else if (yesNoBack.equals("back"))	//plays display if back button was pressed
 			resetPage("src/background display/REVERSEPASS.mp4");
-		else if (yesNoBack.equals("cancel") || yesNoBack.equals("logout"))	//plays display if user log out or canceled entry
+		else if (yesNoBack.equals("cancel"))	//plays display if user log out or canceled entry
 			resetPage("src/background display/REVERSETOPPASSPAGE.mp4");
+		else if (yesNoBack.equals("logouthome"))	//plays the display if user logged out directly from the home page
+			resetPage("src/background display/REVERSEWORKSPACE.mp4");
+		else if (yesNoBack.equals("logout"))		//plays the display if user logged out during workspace editing, searching, anything other than home page
+			resetPage("src/background display/LOGOUTEDIT.mp4");
 		
 		stage.setTitle("Welcome Back To Digi-Diary!"); //change the title of application
 		getFilePass();		//get password file content
@@ -105,11 +112,11 @@ public class ReturningLogin implements ProgramMethodInt{
 		Label successful = label("New password created successfully!",0,0,"label2_1",0,0,550,100,null,null,null,null); successful.setStyle("-fx-underline: true;");
 		Label enterPass = label("Enter chosen password: ",0,0,"label2",0,0,550,100,null,null,null,null);
 		Label invalidPass = label("Password was incorrect.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
-		textBox = passwordField("", 300,50,300,50,"textfield1");
-		textBoxShow = textField("", 300,50,300,50,"textfield1");
+		textBox = passwordField("", 300,50,300,50,"textfield3");
+		textBoxShow = textField("", 300,50,300,50,"textfield3");
 		Button showPass = button("Show",0,0,"button1_",120,50,120,50,null,null,null,null);
-		Button signIn = button("Sign in", 0,0,"button4",150,50,150,50,null,null,null,null);
-		Button changePass = button("Change password",0,0,"button4",200,50,200,50,null,null,null,null);
+		Button signIn = button("Sign in", 0,0,"button4_3",150,50,150,50,null,null,null,null);
+		Button changePass = button("Change password",0,0,"button4_3",200,50,200,50,null,null,null,null);
 		Button forgotPass = button("Forgot password",0,0,"button1_1",166,50,166,50,null,null,null,null);
 		//button functions
 		showPass.setOnAction(new EventHandler<ActionEvent> () {
@@ -143,6 +150,9 @@ public class ReturningLogin implements ProgramMethodInt{
 				//correct default pass or else set red text
 				if (str.equals(filePass)) {
 					isHidden = true;	//reset show password indicator
+					JW.initializeObjects();		//set up journal workspace nodes
+					JW.bindObjectValues();		//set up journal workspace nodes
+					JW.setObjectListeners();		//set up journal workspace nodes
 					JW.setUpJW();		//set up journal workspace for returning user
 				}
 				else {
@@ -263,12 +273,12 @@ public class ReturningLogin implements ProgramMethodInt{
 		//make nodes
 		setPass = label("Set new password: ",0,0,"label2",0,0,550,100,null,null,null,null);
 		reenterPass = label("Confirm password: ",0,0,"label2",0,0,550,100,null,null,null,null);
-		textBoxShow = textField("", 300,50,300,50,"textfield1");
-		textBoxShow2 = textField("", 300,50,300,50,"textfield1");
-		textBox = passwordField("", 300,50,300,50,"textfield1");
-		textBox2 = passwordField("", 300,50,300,50,"textfield1");
-		confirm = button("Confirm", 0,0,"button4",150,50,150,50,null,null,null,null);
-		back = button("Back", 0,0,"button4",125,50,125,50,null,null,null,null);
+		textBoxShow = textField("", 300,50,300,50,"textfield3");
+		textBoxShow2 = textField("", 300,50,300,50,"textfield3");
+		textBox = passwordField("", 300,50,300,50,"textfield3");
+		textBox2 = passwordField("", 300,50,300,50,"textfield3");
+		confirm = button("Confirm", 0,0,"button4_3",150,50,150,50,null,null,null,null);
+		back = button("Back", 0,0,"button4_3",125,50,125,50,null,null,null,null);
 		showPass = button("Show",0,0,"button1_",120,50,120,50,null,null,null,null);
 		showPass2 = button("Show",0,0,"button1_",120,50,120,50,null,null,null,null);
 		passwordInvalid = label("Invalid password combination.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
@@ -438,9 +448,9 @@ public class ReturningLogin implements ProgramMethodInt{
 		//nodes
 		Label displayQuestion = label(securityQuestion,0,0,"label2",0,0,550,300,null,null,null,null);
 		Label wrongAnswer = label("Answer is incorrect.",0,0,"labelInvalidPass1",0,0,550,100,null,null,null,null);
-		textBoxShow = textField("", 350,50,350,50,"textfield1");
-		Button submit = button("Submit", 0,0,"button4",150,50,150,50,null,null,null,null);
-		back = button("Back", 0,0,"button4",125,50,125,50,null,null,null,null);
+		textBoxShow = textField("", 350,50,350,50,"textfield3");
+		Button submit = button("Submit", 0,0,"button4_3",150,50,150,50,null,null,null,null);
+		back = button("Back", 0,0,"button4_3",125,50,125,50,null,null,null,null);
 		
 		
 		//button functions
