@@ -37,11 +37,7 @@ import javafx.util.Duration;
 /**
  * Class JournalWorkspace contains methods that will be called to edit the GUI with features regarding the journal workspace.
  */
-public class JournalWorkspace implements ProgramMethodInt {
-	
-	//scaled object
-	ObservableValue<? extends Number> width;
-	ObservableValue<? extends Number> height;
+public class JournalWorkspace implements ProgramMethodInt{
 	
 	//every node for reference that are used for journal workspace
 	Rectangle searchBar;				//make this a centered with message	--> search			//doesn't have to be instance variable
@@ -63,7 +59,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 	Button saveEntry;
 	Button cancel;
 	Button logOut;
-	Button settings;
 	Button backToHome;
 	Button confirmDelete;		//make this a centered with message	--> delete			//doesn't have to be instance variable
 	Button volumeMinus;			//make this a centered with message	--> settings		//doesn't have to be instance variable
@@ -74,6 +69,7 @@ public class JournalWorkspace implements ProgramMethodInt {
 	TextArea viewArea;			//user views searched entries from here
 	TextField displayUserDateTime;			//shows user's local time and date
 	Slider slider;				//volume slider
+	ComboBox<String> dropDownMenu;
 	
 	//data holders
 	Path entryPath;
@@ -83,11 +79,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 	String fileTitle = "";		//title
 	String fileContent;		//entry content
 	boolean isFromHomePage = true;	//used to decide which animation to display
-	ComboBox<String> dropDownMenu;
-	
-//	//draggable pane
-//	double xCoord = 0.0;
-//	double yCoord = 0.0;
 	
 	@Override
 	public void add(Object obj) {
@@ -107,13 +98,12 @@ public class JournalWorkspace implements ProgramMethodInt {
 		saveEntry.setMinSize(buttonBox.getWidth()*0.90813648294,50.77333333333333);
 		cancel.setMinSize(buttonBox.getWidth()*0.90813648294,50.77333333333333);
 		logOut.setMinSize(buttonBox.getWidth()*0.90813648294,50.77333333333333);
-		settings.setMinSize(buttonBox.getWidth()*0.90813648294,50.77333333333333);
 		backToHome.setMinSize(buttonBox.getWidth()*0.90813648294,50.77333333333333);
 		area.setPrefSize(contentBox.getWidth(), contentBox.getHeight());
 		area.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");								//automatically resize the font of the textbox; font size golden rule is to /1.618
-		title.setPrefSize(titleBar.getWidth()/4*3-(root.getWidth()*0.00656167979/2), titleBar.getHeight());
+		title.setPrefSize(titleBar.getWidth()/8*5-(root.getWidth()*0.00656167979/2), titleBar.getHeight());
 		title.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");							
-		date.setPrefSize(titleBar.getWidth()/4-(root.getWidth()*0.00656167979/2), titleBar.getHeight());
+		date.setPrefSize(titleBar.getWidth()/8*3-(root.getWidth()*0.00656167979/2), titleBar.getHeight());
 		date.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
 		displayUserDateTime.setPrefSize(root.getWidth()/5.5, root.getHeight()/20);
 		displayUserDateTime.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
@@ -219,9 +209,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 						//since we deleted editEntry, must reset the location of the other two buttons that are being displayed
 						backToHome.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));		
 						backToHome.layoutYProperty().bind(buttonBox.layoutYProperty().add(buttonBox.heightProperty().multiply(0.0131302521)));
-						
-						settings.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-						settings.layoutYProperty().bind(backToHome.layoutYProperty().add(backToHome.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
 					}
 					else if (stage.getTitle().contains("Recovery") && root.getChildren().contains(recover)) {			// must be false because this means user is NOT ON the homepage (homepage should not be editable anyways)
 						root.getChildren().remove(recover);		//remove recover since it is in search/recovery mode
@@ -229,9 +216,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 						//since we deleted editEntry, must reset the location of the other two buttons that are being displayed
 						backToHome.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));		
 						backToHome.layoutYProperty().bind(buttonBox.layoutYProperty().add(buttonBox.heightProperty().multiply(0.0131302521)));
-						
-						settings.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-						settings.layoutYProperty().bind(backToHome.layoutYProperty().add(backToHome.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
 					}
 				}
 				else if (dropDownMenu.getValue() != null) {
@@ -291,10 +275,8 @@ public class JournalWorkspace implements ProgramMethodInt {
 				createNewEntry();
 				
 				//get a random unique number
-				String todayTime = LocalTime.now().toString();
-				int num = Integer.valueOf(todayTime.substring(0,2)) + Integer.valueOf(todayTime.substring(3,5)) * Integer.valueOf(todayTime.substring(6,8)) * Integer.valueOf(todayTime.substring(9,todayTime.length()));
-				String uniqueNum = String.valueOf(num) + String.valueOf(num)  + String.valueOf(num) + String.valueOf(num) + String.valueOf(num)  + String.valueOf(num);
-				fileTitle = "[" + uniqueNum.substring(0,6) + "]" + todayDate;		//unique random num at 6 digits
+				todayDate = setDateTime();
+				fileTitle = todayDate;		//unique random num at 6 digits
 				
 				//creates a new txt file in specified folder location
 				try {
@@ -307,7 +289,7 @@ public class JournalWorkspace implements ProgramMethodInt {
 					e.printStackTrace();
 				}
 				
-				addLine(savedFile, fileTitle.substring(22,fileTitle.length()-4) + ".txt");	//add the entry within the saved folder
+				addLine(savedFile, fileTitle.substring(22,fileTitle.length()));	//add the entry within the saved folder
 			}
 		});
 		searchOldEntry.setOnAction(new EventHandler<ActionEvent>() {
@@ -333,13 +315,7 @@ public class JournalWorkspace implements ProgramMethodInt {
 				viewArea.setVisible(false);
 				dropDownMenu.setVisible(false);
 				
-				String data = fileTitle;												//for some reason fileTitle gets changed when calling substring below twice
-				area.setText(viewArea.getText());										//transfer text into the big text area
-				title.setText(data.substring(0,data.length()-22));						//set old date
-				date.setText(data.substring(data.length()-14,data.length()-4));			//set old title
-				
-				data = entryPath.toString();
-				data = data.substring(24, data.length());
+				String data = dropDownMenu.getValue().toString();												//for some reason fileTitle gets changed when calling substring below twice
 				
 				File file = new File("src/fileDB/deletedFiles/" + data);
 				file.renameTo(new File("src/fileDB/savedFiles/" + data));			//move selected deleted file back into saved folder
@@ -387,8 +363,8 @@ public class JournalWorkspace implements ProgramMethodInt {
 					
 					String data = fileTitle;		//for some reason fileTitle gets changed when calling substring below twice
 					area.setText(viewArea.getText());													//transfer text into the big text area
-					title.setText(data.substring(0,data.length()-22));						//set old date
-					date.setText(data.substring(data.length()-14,data.length()-4));		//set old title
+					title.setText(data.substring(0,data.length()-24));						//set old date
+					date.setText(data.substring(data.length()-24,data.length()-4));		//set old title
 				}
 			}
 		});
@@ -407,11 +383,7 @@ public class JournalWorkspace implements ProgramMethodInt {
 			public void handle(ActionEvent event) {
 				click();	//click sound/audio
 				
-				File file = new File(entryPath.toString());
-				file.renameTo(new File("src/fileDB/deletedFiles/"  + fileTitle.substring(22,fileTitle.length()-4) + ".txt"));			//move to deleted files to allow for chance of recovery. All deleted entires will be permanantly deleted when user closes application.
-				
-				addLine(deletedFile, fileTitle.substring(22,fileTitle.length()-4) + ".txt");	//add the entry within the deleted folder
-				deleteLine(savedFile, fileTitle.substring(22,fileTitle.length()-4) + ".txt");	//delete the entry within saved folder
+				cancelSave();
 				
 				setUpJW();							//return back to workspace home page
 			}
@@ -442,12 +414,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 						e.printStackTrace();
 					}
 				}
-			}
-		});
-		settings.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				click();	//click sound/audio
 			}
 		});
 		slider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -555,11 +521,10 @@ public class JournalWorkspace implements ProgramMethodInt {
 		title.setEditable(false);
 		
 		date = textField("",0, 0, 0, 0,"textfield3");
-		date.layoutXProperty().bind(titleBar.layoutXProperty().add(titleBar.widthProperty().multiply(0.75).add(root.getWidth()*0.00656167979/2)));
+		date.layoutXProperty().bind(titleBar.layoutXProperty().add(titleBar.widthProperty().multiply(0.625).add(root.getWidth()*0.00656167979/2)));
 		date.layoutYProperty().bind(titleBar.layoutYProperty());
 		date.setPrefSize(titleBar.getWidth()/4-(root.getWidth()*0.00656167979/2), titleBar.getHeight());
 		date.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
-		textFieldLength(date, 10, true);		//property observer for date
 		date.setEditable(false);
 		
 		displayUserDateTime = textField(todayDate,0, 0, 0, 0,"textfield3_1");
@@ -569,7 +534,7 @@ public class JournalWorkspace implements ProgramMethodInt {
 		displayUserDateTime.setEditable(false);
 		displayUserDateTime.setAlignment(Pos.CENTER);
 		displayUserDateTime.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
-		displaylocalDateTime(displayUserDateTime, "both");
+		displayLocalDateTime(displayUserDateTime, "both");
 		
 		//buttonBox width 			//buttonBox.getWidth()*0.90813648294						//buttonBox.widthProperty().multiply(0.90813648294);
 		//button height 			//buttonBox.getHeight()/15									//buttonBox.heightProperty().divide(15);
@@ -592,15 +557,9 @@ public class JournalWorkspace implements ProgramMethodInt {
 		logOut.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
 		logOut.layoutYProperty().bind(recoverOldEntry.layoutYProperty().add(recoverOldEntry.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
 		
-		settings = button("", 0, 0, "button4_3",197.71428571436573,50.77333333333333,0,0,null,null,null,null);
-		settings.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-		settings.layoutYProperty().bind(logOut.layoutYProperty().add(logOut.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
-		ImageView imgView = new ImageView(new File("src/background display/gear.png").toURI().toString());
-		settings.setGraphic(imgView);
-		
 		recover = button("Recover entry", 0, 0, "button4_3",197.71428571436573,50.77333333333333,0,0,null,null,null,null);
 		recover.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-		recover.layoutYProperty().bind(settings.layoutYProperty().add(settings.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
+		recover.layoutYProperty().bind(logOut.layoutYProperty().add(logOut.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
 		
 		deleteEntry = button("Delete entry", 0, 0, "button4_3",197.71428571436573,50.77333333333333,0,0,null,null,null,null);
 		deleteEntry.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
@@ -628,10 +587,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 		dropDownMenu.layoutYProperty().bind(contentBox.layoutYProperty());
 		dropDownMenu.getSelectionModel().select(0);
 		dropDownMenu.setVisibleRowCount(18);
-		//dropDownMenu.setDisable(true);				//user doesn't open it, it will open the menu by itself when user searches something
-//		dropDownMenu.getItems().addAll(
-//				"[692926]2023-07-21.txt",
-//				"[142121]2023-07-21.txt");
 		
 		viewArea = textArea("", contentBox.getHeight()/2, contentBox.getHeight(), 0,0, "textfield3");
 		viewArea.layoutXProperty().bind(dropDownMenu.layoutXProperty().add(dropDownMenu.widthProperty()));
@@ -641,6 +596,8 @@ public class JournalWorkspace implements ProgramMethodInt {
 		
 		slider = new Slider();
 		slider.setId("slider1");
+		slider.layoutXProperty().bind(root.widthProperty().multiply(25).divide(1524));
+		slider.layoutYProperty().bind(root.heightProperty().multiply(10).divide(895));
 		
 		
 		if (isFromHomePage == true) {
@@ -671,6 +628,8 @@ public class JournalWorkspace implements ProgramMethodInt {
 		
 		createTransition(Duration.millis(duration), dropDownMenu,1);
 		
+		createTransition(Duration.millis(duration), slider,1);
+		
 		createTransition(Duration.millis(duration), createNewEntry,1);
 		createTransition(Duration.millis(duration), searchOldEntry,1);
 		createTransition(Duration.millis(duration), recoverOldEntry,1);
@@ -680,7 +639,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 		createTransition(Duration.millis(duration), saveEntry,1);
 		createTransition(Duration.millis(duration), cancel,1);
 		createTransition(Duration.millis(duration), logOut,1);
-		createTransition(Duration.millis(duration), settings,1);
 		createTransition(Duration.millis(duration), backToHome,1);
 	}
 	
@@ -690,7 +648,7 @@ public class JournalWorkspace implements ProgramMethodInt {
 	 */
 	public void setUpJW() {
 		stage.setTitle("Digi-Diary Workspace | Homepage");			//rename the title bar
-		todayDate = LocalDate.now().toString(); 		//gets current date of user editing text
+		todayDate = setDateTime(); 		//gets current date of user editing text
 		
 		if (isFromHomePage == true) {
 			resetPage("src/background display/WORKSPACE.mp4");
@@ -710,24 +668,15 @@ public class JournalWorkspace implements ProgramMethodInt {
 		add(contentBox);
 		add(titleBar);
 		add(displayUserDateTime);
-//		add(slider);
+		add(slider);
 		add(area);
-//		add(viewArea);
 		add(title);
 		add(date);		//make sure date is last object added before buttons so that the menu stays consistent when adding or deleting buttons
 		
 		add(createNewEntry);
 		add(searchOldEntry);
 		add(recoverOldEntry);
-//		add(recover);
-//		add(deleteEntry);
-//		add(editEntry);
-//		add(saveEntry);
-//		add(cancel);
 		add(logOut);
-		add(settings);
-//		add(backToHome);
-//		add(dropDownMenu);
 		
 		
 	}
@@ -761,7 +710,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 		
 		add(editEntry);
 		add(cancel);
-		add(settings);
 		
 		
 		//setting the layout/order of the buttons menu
@@ -770,9 +718,6 @@ public class JournalWorkspace implements ProgramMethodInt {
 		
 		cancel.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
 		cancel.layoutYProperty().bind(editEntry.layoutYProperty().add(editEntry.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
-		
-		settings.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-		settings.layoutYProperty().bind(cancel.layoutYProperty().add(cancel.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
 	}
 	
 	/**
@@ -806,16 +751,11 @@ public class JournalWorkspace implements ProgramMethodInt {
 		add(date);
 		
 		add(backToHome);
-		add(settings);
 		
 		
 		//setting the layout/order of the buttons menu
 		backToHome.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
 		backToHome.layoutYProperty().bind(buttonBox.layoutYProperty().add(buttonBox.heightProperty().multiply(0.0131302521)));
-		
-		settings.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-		settings.layoutYProperty().bind(backToHome.layoutYProperty().add(backToHome.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
-		
 	}
 	
 	/**
@@ -850,15 +790,11 @@ public class JournalWorkspace implements ProgramMethodInt {
 		add(date);
 		
 		add(backToHome);
-		add(settings);
 		
 		
 		//setting the layout/order of the buttons menu
 		backToHome.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
 		backToHome.layoutYProperty().bind(buttonBox.layoutYProperty().add(buttonBox.heightProperty().multiply(0.0131302521)));
-		
-		settings.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-		settings.layoutYProperty().bind(backToHome.layoutYProperty().add(backToHome.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
 	}
 	
 	/**
@@ -1007,56 +943,26 @@ public class JournalWorkspace implements ProgramMethodInt {
 	}
 	
 	/**
-	 * Method textFieldLength will disallow for a textfield's text length to exceed a specified amount of characters.
-	 * @param textField		the text field to apply this change
-	 * @param int			the specified maximum length
-	 * @param numOnly		if true = letters/symbols are not accepted except for "-"; false = any characer is accepted
+	 * Method autoSave will directly save the contents of the entry into a file txt and can be applied once user clicks on closing the application.
 	 */
-	public void textFieldLength(TextField textField, int length, boolean numOnly) throws IllegalArgumentException{
-		textField.textProperty().addListener(new ChangeListener<String>() {
-	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
-	        	String str = "";
-	        	if (numOnly == true) {
-	        		String temp = textField.getText();
-	        		String numbersOnly = "1234567890";
-	        		for (int i = 0; i < temp.length(); i++) {
-	        			if (str.length() == 4 || str.length() == 7) {
-        					str = str + "-";
-        				}
-	        			if (numbersOnly.contains(temp.substring(i,i+1))) {
-	        				str = str + temp.substring(i,i+1);
-	        			}
-	        		}
-	        		if (str.length() > length) {
-	        			str = str.substring(0, length);
-	        		}
-	        		textField.setText(str);
-	        	}
-	        	else {
-	        		if (textField.getText().length() > length) {
-	        			str = textField.getText();
-		                str = str.substring(0, length);
-		                textField.setText(str);
-		            }
-	        	}
-	        }
-	    });
-	}
-	
 	public void autoSave() {
 		String data = entryPath.toString();
-		data = data.substring(22, data.length());
+		data = data.substring(22, data.length());		//just the txt file name
 		
 		File folderFile = new File("src/fileDB/savedFiles/" + data);		//if not auto save then delete default titleless draft
 		folderFile.delete();
 		deleteLine(savedFile, data);										//also delete it from savedFile txt
 		
-		data = data.replace(data.substring(data.length()-14, data.length()-4), date.getText());	//get the new date
-		if (data.length()-22 == 0) {															//add the new title
+		
+		if (date.getText().length() != 20 || !checkValidDate(date.getText())) {		//if user doesn't put in valid date just replace with current date of editing
+			todayDate = setDateTime();
+		}
+		data = data.replace(data.substring(data.length()-24, data.length()-4), todayDate);	//set date/time
+		if (data.length()-24 == 0) {															//add the new title
 			data = title.getText() + data;
 		}
 		else {
-			data = data.replace(data.substring(0, data.length()-22),title.getText());
+			data = data.replace(data.substring(0, data.length()-24),title.getText());
 		}
 		
 		file = new File("src/fileDB/savedFiles/" + data);					//create the new updated file with name/date
@@ -1075,5 +981,74 @@ public class JournalWorkspace implements ProgramMethodInt {
 			fw.close();
 			
 		}catch(IOException e) {e.printStackTrace();}
+	}
+	
+	/**
+	 * Method setDateTime will get user's current date and time.
+	 * @return str		the time + date in a string
+	 */
+	public String setDateTime() {
+		String date = LocalDate.now().toString();
+		String time = LocalTime.now().toString();
+		time = "[" + time.substring(0,2) + "." + time.substring(3,5) + "." + time.substring(6,8) + "]";
+		String str = time + date;
+		return str;
+	}
+	
+	/**
+	 * Method checkValidDate checks with the date that the user input is valid or not.
+	 * @param string	string to back checked
+	 * @return tF		true = good to go, false = replace date with current date
+	 */
+	public boolean checkValidDate(String string) {
+		boolean tF = true;
+		String validChar = "[].-1234567890";
+		for (int i = 0; i < string.length(); i++) {
+			if (!validChar.contains(string.substring(i,i+1))){		//check if all characters are valid or not one character at a time
+				tF = false;
+				i = string.length();			//break loop if found false character
+			}
+		}
+		if (tF == true) {			//check to make sure there are exactly 14 numbers
+			validChar = string;
+			validChar = validChar.replace("[","");
+			validChar = validChar.replace("]","");
+			validChar = validChar.replace("-","");
+			validChar = validChar.replace(".","");
+			if (validChar.length() != 14) {
+				tF = false;
+			}
+		}
+		return tF;
+	}
+	
+	/**
+	 * Method cancelSave will save the draft that user cancelled on in case they want to recover it during the session; otherwise, it will be autodeleted.
+	 */
+	public void cancelSave() {
+		File file = new File(entryPath.toString());
+		deleteLine(savedFile, entryPath.toString().substring(22, entryPath.toString().length()));	//delete the entry within saved folder
+		
+		if (date.getText().length() != 20 || !checkValidDate(date.getText())) {		//if current date by user is not 20 length or contains invalid characters then set to current date/time
+			todayDate = setDateTime();
+		}
+		fileTitle = title.getText() + entryPath.toString().substring(22,entryPath.toString().length()-24) + todayDate + ".txt";
+		try {												//add content to file
+			FileWriter fw = new FileWriter(file);			//file = "something.txt"
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
+			
+			clearFile(file);
+			pw.println(area.getText());
+			
+			pw.close();
+			bw.close();
+			fw.close();
+			
+		}catch(IOException e) {e.printStackTrace();}
+		
+		file.renameTo(new File("src/fileDB/deletedFiles/"  + fileTitle));			//move to deleted files to allow for chance of recovery. All deleted entires will be permanantly deleted when user closes application.
+
+		addLine(deletedFile, fileTitle);	//add the entry within the deleted folder
 	}
 }
