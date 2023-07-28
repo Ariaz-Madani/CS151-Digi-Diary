@@ -1,20 +1,15 @@
 package application;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
-import javafx.animation.FadeTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -23,10 +18,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -37,7 +33,7 @@ import javafx.util.Duration;
 /**
  * Class JournalWorkspace contains methods that will be called to edit the GUI with features regarding the journal workspace.
  */
-public class JournalWorkspace implements ProgramMethodInt{
+public class JournalWorkspace implements ProgramMethodInt, FileMethodInt{
 	
 	//every node for reference that are used for journal workspace
 	Rectangle searchBar;				//make this a centered with message	--> search			//doesn't have to be instance variable
@@ -71,8 +67,16 @@ public class JournalWorkspace implements ProgramMethodInt{
 	Slider slider;				//volume slider
 	ComboBox<String> dropDownMenu;
 	
+	//date picker
+	Rectangle pickDateTime;
+	Rectangle pickDateTimeBorder;
+	DatePicker datePicker;
+	ComboBox<String> hours;
+	ComboBox<String> minutes;
+	ComboBox<String> seconds;
+	
 	//data holders
-	Path entryPath;
+	Path entryPath;		//key ingredient to navigating changing files (path will always generate the updated title, date, content, and location.
 	File file;
 	String todayDate;
 	String fileDate;		//date
@@ -112,6 +116,14 @@ public class JournalWorkspace implements ProgramMethodInt{
 		viewArea.setPrefSize(contentBox.getWidth()/2, contentBox.getHeight());
 		viewArea.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
 		slider.setStyle("-fx-pref-width: " + root.getWidth()*250/1524 + "; -fx-pref-height: " + root.getHeight()*25/895 + ";");
+		hours.setPrefSize(pickDateTime.getWidth()*(0.2732808399), titleBar.getHeight());
+		hours.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
+		minutes.setPrefSize(pickDateTime.getWidth()*(0.2732808399), titleBar.getHeight());
+		minutes.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
+		seconds.setPrefSize(pickDateTime.getWidth()*(0.2732808399), titleBar.getHeight());
+		seconds.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
+		datePicker.setPrefSize(pickDateTime.getWidth()*(0.9249343832), pickDateTime.getHeight()*(0.6360454945)/6);
+		datePicker.setStyle("-fx-font-size: " + root.getHeight()/53/1.618 + "pt;");
 	}
 	
 	/**
@@ -119,23 +131,24 @@ public class JournalWorkspace implements ProgramMethodInt{
 	 */
 	public void setObjectListeners() {
 		root.heightProperty().addListener(new ChangeListener<Number>() {
-
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				bindObjectValues();		//refreshes and resizes all nodes currently visible
 			}
-			
 		});
 		root.widthProperty().addListener(new ChangeListener<Number>() {
-
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				bindObjectValues();		//refreshes and resizes all nodes currently visible
 			}
-			
+		});
+		stage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				bindObjectValues();
+			}
 		});
 		buttonBoxBorder.setOnMousePressed(new EventHandler<  MouseEvent>() {
-
 			@Override
 			public void handle(MouseEvent event) {
 				if (buttonBoxBorder.getWidth() == 15 || buttonBox.getWidth() == 15) {
@@ -146,6 +159,12 @@ public class JournalWorkspace implements ProgramMethodInt{
 					for (int i = root.getChildren().indexOf(date) + 1; i < root.getChildren().size(); i++) {
 						root.getChildren().get(i).setVisible(true);
 					}
+					if (date.getId().equals("textfield3_2")) {
+						toggleDateTimePicker(true);
+					}
+					else {
+						toggleDateTimePicker(false);
+					}
 				}
 				else {
 					buttonBox.setWidth(15);
@@ -155,10 +174,15 @@ public class JournalWorkspace implements ProgramMethodInt{
 					for (int i = root.getChildren().indexOf(date) + 1; i < root.getChildren().size(); i++) {
 						root.getChildren().get(i).setVisible(false);
 					}
+					if (date.getId().equals("textfield3_2")) {
+						toggleDateTimePicker(true);
+					}
+					else {
+						toggleDateTimePicker(false);
+					}
 				}
 				bindObjectValues();		//refreshes and resizes all nodes currently visible
 			}
-
 		});
 		//Separate event functions
 		//ensures that textbox changes or sets new input when user selects a choice from drop down menu
@@ -168,7 +192,8 @@ public class JournalWorkspace implements ProgramMethodInt{
 				if (stage.getTitle().contains("Old Entry") && dropDownMenu.getValue()!=null) {		//if user is using drop down menu on search page
 					//get the text from selected file and display it on resized text area
 					fileTitle = dropDownMenu.getValue();							//gets the selected file name
-					entryPath = Paths.get("src/fileDB/savedFiles/" + fileTitle);	//gets the path to that file
+					fileTitle = fileTitle.substring(0,fileTitle.length()-25) + fileTitle.substring(fileTitle.length()-20,fileTitle.length());
+					entryPath = Paths.get("src/fileDB/savedFiles/" + fileTitle + ".txt");	//gets the path to that file
 					file = new File(entryPath.toString());							//make a new file object that links to the content of selected file path
 					fileContent = getFileContent(file);								//get the file content
 					
@@ -176,7 +201,8 @@ public class JournalWorkspace implements ProgramMethodInt{
 				}
 				else if (stage.getTitle().contains("Recovery") && dropDownMenu.getValue()!=null) {		//if user is using drop down menu on recovery page
 					fileTitle = dropDownMenu.getValue();							//gets the selected file name
-					entryPath = Paths.get("src/fileDB/deletedFiles/" + fileTitle);	//gets the path to that file
+					fileTitle = fileTitle.substring(0,fileTitle.length()-25) + fileTitle.substring(fileTitle.length()-20,fileTitle.length());
+					entryPath = Paths.get("src/fileDB/deletedFiles/" + fileTitle + ".txt");	//gets the path to that file
 					file = new File(entryPath.toString());							//make a new file object that links to the content of selected file path
 					fileContent = getFileContent(file);								//get the file content
 					
@@ -247,26 +273,21 @@ public class JournalWorkspace implements ProgramMethodInt{
 				}
 			}
 		});
-		
-		
 		//---------------------------------------------------------------------------------------------------------------------------------------------
 		//event after application exits
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-//				Platform.exit();		//closes the platforms that threads run on including the application's launch
-//				System.exit(0);			//closes all the threads indefinitely 
-										//there is already an auto-save system in place for NEW ENTRIES ONLY that aren't saved
-										//there could also be an auto save by adding a listener but that would defeat the purpose of having a save button...
+				//there is already an auto-save system in place for NEW ENTRIES ONLY that aren't saved
+				//there could also be an auto save for editing old files by adding a listener but that would defeat the purpose of having a save button...
 				if (stage.getTitle().contains("New Entry")) {
-					autoSave();
+					autoSave(entryPath, title, fileDate, file, area);
 				}
 				clearFolder();
 				clearFile(deletedFile);
 			}
 		});
 		//---------------------------------------------------------------------------------------------------------------------------------------------
-
 		//buttons
 		createNewEntry.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -307,7 +328,6 @@ public class JournalWorkspace implements ProgramMethodInt{
 			}
 		});
 		recover.setOnAction(new EventHandler<ActionEvent>() {
-
 			@Override
 			public void handle(ActionEvent event) {
 				click();	//click sound/audio
@@ -316,6 +336,7 @@ public class JournalWorkspace implements ProgramMethodInt{
 				dropDownMenu.setVisible(false);
 				
 				String data = dropDownMenu.getValue().toString();												//for some reason fileTitle gets changed when calling substring below twice
+				data = data.substring(0,data.length()-25) + data.substring(data.length()-20,data.length()) + ".txt";
 				
 				File file = new File("src/fileDB/deletedFiles/" + data);
 				file.renameTo(new File("src/fileDB/savedFiles/" + data));			//move selected deleted file back into saved folder
@@ -326,7 +347,6 @@ public class JournalWorkspace implements ProgramMethodInt{
 				
 				setUpJW();  //return to homepage
 			}
-			
 		});
 		deleteEntry.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -351,7 +371,6 @@ public class JournalWorkspace implements ProgramMethodInt{
 				
 				area.setEditable(true);												//makes the 3 fields (content, title, and date all able to be edited and worked on by user
 				title.setEditable(true);
-				date.setEditable(true);
 				
 				
 				if (stage.getTitle().contains("Old Entry")) {
@@ -363,8 +382,8 @@ public class JournalWorkspace implements ProgramMethodInt{
 					
 					String data = fileTitle;		//for some reason fileTitle gets changed when calling substring below twice
 					area.setText(viewArea.getText());													//transfer text into the big text area
-					title.setText(data.substring(0,data.length()-24));						//set old date
-					date.setText(data.substring(data.length()-24,data.length()-4));		//set old title
+					title.setText(data.substring(0,data.length()-20));						//set old title
+					date.setText(data.substring(data.length()-20,data.length()));		//set old date
 				}
 			}
 		});
@@ -373,7 +392,7 @@ public class JournalWorkspace implements ProgramMethodInt{
 			public void handle(ActionEvent event) {
 				click();	//click sound/audio
 				
-				autoSave();
+				autoSave(entryPath, title, fileDate, file, area);
 				
 				setUpJW();		//exit back to homepage
 			}
@@ -383,7 +402,7 @@ public class JournalWorkspace implements ProgramMethodInt{
 			public void handle(ActionEvent event) {
 				click();	//click sound/audio
 				
-				cancelSave();
+				cancelSave(entryPath, fileTitle, title, todayDate, area);
 				
 				setUpJW();							//return back to workspace home page
 			}
@@ -417,14 +436,12 @@ public class JournalWorkspace implements ProgramMethodInt{
 			}
 		});
 		slider.valueProperty().addListener(new ChangeListener<Number>() {
-
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				MediaView viewer = (MediaView) root.getChildren().get(1);
 				MediaPlayer player = viewer.getMediaPlayer();
 				player.setVolume((double) newValue/250);
 			}
-			
 		});
 		
 		title.textProperty().addListener(new ChangeListener<String>() {
@@ -438,22 +455,30 @@ public class JournalWorkspace implements ProgramMethodInt{
 							dropDownMenu.getItems().clear();				//clears dropDownMenu items of previous search; MUST be within if statements or editing title of any sort will cause big error at runtime
 						}
 						ArrayList<String> list = findFile(title.getText(), "saved");
-						if (list.size()>0) {
-							for (int i = 0; i < list.size(); i++) {
-								dropDownMenu.getItems().add(list.get(i));		//add options to drop down
-							}
-						}
+						addFilesToMenu(dropDownMenu, list);
 					}
 					else if (stage.getTitle().contains("Recovery") && !root.getChildren().contains(recover)) {		//search for files with the specified text in deleted folder
 						if (dropDownMenu.getItems().size() != 0) {
 							dropDownMenu.getItems().clear();				//clears dropDownMenu items of previous search; MUST be within if statements or editing title of any sort will cause big error at runtime
 						}
 						ArrayList<String> list = findFile(title.getText(), "deleted");
-						if (list.size()>0) {
-							for (int i = 0; i < list.size(); i++) {
-								dropDownMenu.getItems().add(list.get(i));		//add options to drop down
-							}
+						addFilesToMenu(dropDownMenu, list);
+					}
+				}
+				else if (fileTitle.isEmpty()) {
+					if (stage.getTitle().contains("Old Entry") && !root.getChildren().contains(saveEntry)) {		//search for files with the specified text in saved folder
+						if (dropDownMenu.getItems().size() != 0) {
+							dropDownMenu.getItems().clear();				//clears dropDownMenu items of previous search; MUST be within if statements or editing title of any sort will cause big error at runtime
 						}
+						ArrayList<String> list = findFile(".", "saved");
+						addFilesToMenu(dropDownMenu, list);
+					}
+					else if (stage.getTitle().contains("Recovery") && !root.getChildren().contains(recover)) {		//search for files with the specified text in deleted folder
+						if (dropDownMenu.getItems().size() != 0) {
+							dropDownMenu.getItems().clear();				//clears dropDownMenu items of previous search; MUST be within if statements or editing title of any sort will cause big error at runtime
+						}
+						ArrayList<String> list = findFile(".", "deleted");
+						addFilesToMenu(dropDownMenu, list);
 					}
 				}
 			}
@@ -465,6 +490,72 @@ public class JournalWorkspace implements ProgramMethodInt{
 				fileDate = date.getText();		//record the updated date
 			}
 		});
+		date.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (!root.getChildren().contains(pickDateTime) && !stage.getTitle().contains("Homepage") && !date.getText().isEmpty()) {
+					toggleDateTimePicker(true);
+				}
+				else if (root.getChildren().contains(pickDateTime)) {
+					toggleDateTimePicker(false);
+				}
+			}
+		});
+		hours.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				String str = date.getText().substring(0,1) + newValue + date.getText().substring(3,date.getText().length());
+				date.setText(str);
+			}
+		});
+		minutes.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				String str = date.getText().substring(0,4) + newValue + date.getText().substring(6,date.getText().length());
+				date.setText(str);
+			}
+		});
+		seconds.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				String str = date.getText().substring(0,7) + newValue + date.getText().substring(9,date.getText().length());
+				date.setText(str);
+			}
+		});
+		hours.showingProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue)
+					datePicker.setVisible(false);
+				else
+					datePicker.setVisible(true);
+			}
+		});
+		minutes.showingProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue)
+					datePicker.setVisible(false);
+				else
+					datePicker.setVisible(true);
+			}
+		});
+		seconds.showingProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue)
+					datePicker.setVisible(false);
+				else
+					datePicker.setVisible(true);
+			}
+		});
+		
+		datePicker.valueProperty().addListener((ov, oldValue, newValue) -> {
+			String str = date.getText();
+			String newDate = datePicker.getValue().toString();		//this already comes in the format wanted yyyy-MM-dd
+			str = str.substring(0,str.length()-10) + newDate;
+			date.setText(str);
+        });
 	}
 	
 	/**
@@ -474,30 +565,12 @@ public class JournalWorkspace implements ProgramMethodInt{
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		//set up display nodes
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		//formula calculation: 
-		//getWidth() / ((getWidth()-total spacing)/number of buttons) 					for buttons width
-		//getWidth() / (total spacing/number of spaces)		
-		
-		//	1524
-		//- 241.9047619047619
-		//- 1219.2
-		//= 62.8952381				//ratio of 0.04126984127% to root width
-		// 10						//ratio of 0.00656167979% to root width
-		
 		buttonBox = rectangle(0,0,"rect1_1", 217.71428571428572,0,20.0,10.0,null,root.heightProperty().divide(3).multiply(2.55),null,null);
 		buttonBoxBorder = rectangle(0,0,"rect3", 217.71428571428572,0,20.0,10.0,null,root.heightProperty().divide(3).multiply(2.55),null,null);
 		buttonBox.layoutXProperty().bind(root.widthProperty().divide(30));
 		buttonBox.layoutYProperty().bind(root.heightProperty().divide(8));
 		buttonBoxBorder.layoutXProperty().bind(root.widthProperty().divide(30));
 		buttonBoxBorder.layoutYProperty().bind(root.heightProperty().divide(8));
-		
-		//resizable width =
-		//rootWidth() - (buttonBox width + buttonBox layoutX + 0.00656167979% (rootWidth()) + 0.04% (rootWidth())
-		//root.widthProperty().subtract(buttonBox.widthProperty().add(buttonBox.layoutXProperty()).add(root.widthProperty().multiply(0.04783152106)))
-		
-		//resizable xcoord =
-		//buttonBox width + buttonBox layoutX + 0.00656167979% (rootWidth())
-		//buttonBox.widthProperty().add(buttonBox.layoutXProperty()).add(root.widthProperty().multiply(0.00656167979));
 		
 		contentBox = rectangle(0,0,"rect1_1", 0,0,20.0,10.0,root.widthProperty().subtract(buttonBox.widthProperty().add(buttonBox.layoutXProperty()).add(root.widthProperty().multiply(0.04783152106))),root.heightProperty().divide(3).multiply(2.55),null,null);
 		contentBox.layoutXProperty().bind(buttonBox.widthProperty().add(buttonBox.layoutXProperty()).add(root.widthProperty().multiply(0.00656167979)));
@@ -525,7 +598,7 @@ public class JournalWorkspace implements ProgramMethodInt{
 		date.layoutYProperty().bind(titleBar.layoutYProperty());
 		date.setPrefSize(titleBar.getWidth()/4-(root.getWidth()*0.00656167979/2), titleBar.getHeight());
 		date.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
-		date.setEditable(false);
+		date.setEditable(false);			//will ALWAYS be false but user will pick time from a pop up
 		
 		displayUserDateTime = textField(todayDate,0, 0, 0, 0,"textfield3_1");
 		displayUserDateTime.layoutXProperty().bind(root.widthProperty().divide(1.45));
@@ -535,11 +608,6 @@ public class JournalWorkspace implements ProgramMethodInt{
 		displayUserDateTime.setAlignment(Pos.CENTER);
 		displayUserDateTime.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
 		displayLocalDateTime(displayUserDateTime, "both");
-		
-		//buttonBox width 			//buttonBox.getWidth()*0.90813648294						//buttonBox.widthProperty().multiply(0.90813648294);
-		//button height 			//buttonBox.getHeight()/15									//buttonBox.heightProperty().divide(15);
-		// 10						//ratio of 0.04593175853% to buttonBox width				//buttonBox.widthProperty().multiply(0.04593175853);
-		// 10						//ratio of 0.0131302521% to buttonBox height				//buttonBox.heightProperty().multiply(0.0131302521);
 		
 		createNewEntry = button("+ New entry", 0, 0, "button4_3",197.71428571436573,50.77333333333333,0,0,null,null,null,null);
 		createNewEntry.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
@@ -598,8 +666,59 @@ public class JournalWorkspace implements ProgramMethodInt{
 		slider.setId("slider1");
 		slider.layoutXProperty().bind(root.widthProperty().multiply(25).divide(1524));
 		slider.layoutYProperty().bind(root.heightProperty().multiply(10).divide(895));
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
+		//date-time picker
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
+		//266.4335664 - 60 margin /3 = 68.8111888 per field
+		//ratio 0.2582677165 per field;
+		//ratio 0.05629921261 per gap;
+		//266.4335664 / 5 and /5*3 = height  =  53.28671328 && 159.8601398
+		//pickDateTime.widthProperty().divide(5)  &&  pickDateTime.widthProperty().divide(5).multiply(3)
+		//10 / 217.7142857 = 0.04593175853
+		//69.23809523 / 217.7142857 = 0.3180227471
+		//138.4761905 / 217.7142857 = 0.6360454945
+		//59.23809523 / 217.7142857 = 0.2720909886
+		pickDateTime = rectangle(0,0,"rect1_11", 217.71428571428572,0,20.0,10.0,root.widthProperty().divide(5.72),root.heightProperty().divide(2),null,null);
+		pickDateTimeBorder = rectangle(0,0,"rect3_1", 217.71428571428572,0,20.0,10.0,root.widthProperty().divide(5.72),root.heightProperty().divide(2),null,null);
+		pickDateTime.layoutXProperty().bind(titleBar.layoutXProperty().add(titleBar.widthProperty().multiply(0.625).add(root.getWidth()*0.00656167979/2)));
+		pickDateTime.layoutYProperty().bind(root.heightProperty().divide(8));
+		pickDateTimeBorder.layoutXProperty().bind(titleBar.layoutXProperty().add(titleBar.widthProperty().multiply(0.625).add(root.getWidth()*0.00656167979/2)));
+		pickDateTimeBorder.layoutYProperty().bind(root.heightProperty().divide(8));
 		
+		hours = new ComboBox<>();
+		hours.setId("dropdown2");
+		addMenu(hours, 23,5);
+		hours.layoutXProperty().bind(pickDateTime.layoutXProperty().add(pickDateTime.widthProperty().multiply(0.04503937008)));
+		hours.layoutYProperty().bind(pickDateTime.layoutYProperty().add(pickDateTime.heightProperty().multiply(0.04593175853)));
+		hours.setPrefSize(pickDateTime.getWidth()*(0.2732808399), pickDateTime.getHeight()*(0.2720909886));
+		hours.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
+		
+		minutes = new ComboBox<>();
+		minutes.setId("dropdown2");
+		addMenu(minutes, 59,5);
+		minutes.layoutXProperty().bind(pickDateTime.widthProperty().multiply(0.04503937008).add(hours.layoutXProperty()).add(hours.widthProperty()));
+		minutes.layoutYProperty().bind(pickDateTime.layoutYProperty().add(pickDateTime.heightProperty().multiply(0.04593175853)));
+		minutes.setPrefSize(pickDateTime.getWidth()*(0.2732808399), pickDateTime.getHeight()*(0.2720909886));
+		minutes.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
+		
+		seconds = new ComboBox<>();
+		seconds.setId("dropdown2");
+		addMenu(seconds, 59,5);
+		seconds.layoutXProperty().bind(pickDateTime.widthProperty().multiply(0.04503937008).add(minutes.layoutXProperty()).add(minutes.widthProperty()));
+		seconds.layoutYProperty().bind(pickDateTime.layoutYProperty().add(pickDateTime.heightProperty().multiply(0.04593175853)));
+		seconds.setPrefSize(pickDateTime.getWidth()*(0.2732808399), pickDateTime.getHeight()*(0.2720909886));
+		seconds.setStyle("-fx-font-size: " + root.getHeight()/37/1.618 + "pt;");
+		
+		datePicker = new DatePicker();
+		datePicker.layoutXProperty().bind(pickDateTime.layoutXProperty().add(pickDateTime.widthProperty().multiply(0.04593175853)));
+		datePicker.layoutYProperty().bind(hours.layoutYProperty().add(hours.heightProperty()).add(pickDateTime.heightProperty().multiply(0.04593175853)));
+		datePicker.setPrefSize(pickDateTime.getWidth()*(0.9249343832), pickDateTime.getHeight()*(0.6360454945)/6);
+		datePicker.setEditable(false);		//user cannot change the textfield date only select from calendar to prevent any false dates chosen
+		datePicker.setId("datepicker1");
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
+		//set transitions
 		if (isFromHomePage == true) {
 			//fading in nodes
 			initializeTransitions(11000);
@@ -661,7 +780,6 @@ public class JournalWorkspace implements ProgramMethodInt{
 			isFromHomePage = true;
 		}
 		
-		
 		//add nodes
 		add(buttonBox);
 		add(buttonBoxBorder);
@@ -677,8 +795,6 @@ public class JournalWorkspace implements ProgramMethodInt{
 		add(searchOldEntry);
 		add(recoverOldEntry);
 		add(logOut);
-		
-		
 	}
 	
 	/**
@@ -708,16 +824,20 @@ public class JournalWorkspace implements ProgramMethodInt{
 		add(title);
 		add(date);	date.setText(todayDate);	//set the date when new entry
 		
-		add(editEntry);
+		add(saveEntry);
 		add(cancel);
 		
 		
+		//set areas editable
+		area.setEditable(true);												//makes the 3 fields (content, title, and date all able to be edited and worked on by user
+		title.setEditable(true);
+		
 		//setting the layout/order of the buttons menu
-		editEntry.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-		editEntry.layoutYProperty().bind(buttonBox.layoutYProperty().add(buttonBox.heightProperty().multiply(0.0131302521)));
+		saveEntry.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
+		saveEntry.layoutYProperty().bind(buttonBox.layoutYProperty().add(buttonBox.heightProperty().multiply(0.0131302521)));
 		
 		cancel.layoutXProperty().bind(buttonBox.layoutXProperty().add(buttonBox.widthProperty().multiply(0.04593175853)));
-		cancel.layoutYProperty().bind(editEntry.layoutYProperty().add(editEntry.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
+		cancel.layoutYProperty().bind(saveEntry.layoutYProperty().add(saveEntry.heightProperty()).add(buttonBox.widthProperty().multiply(0.04593175853)));
 	}
 	
 	/**
@@ -738,6 +858,9 @@ public class JournalWorkspace implements ProgramMethodInt{
 		//fade in nodes
 		initializeTransitions(2000);
 		
+		//set up dropDownMenu
+		ArrayList<String> list = findFile(".", "saved");
+		addFilesToMenu(dropDownMenu, list);
 		
 		add(buttonBox);
 		add(buttonBoxBorder);
@@ -776,6 +899,11 @@ public class JournalWorkspace implements ProgramMethodInt{
 		
 		//fade in nodes
 		initializeTransitions(2000);
+		
+		//set up dropDownMenu
+		ArrayList<String> list = findFile(".", "deleted");
+		addFilesToMenu(dropDownMenu, list);
+		
 		
 		
 		add(buttonBox);
@@ -845,210 +973,55 @@ public class JournalWorkspace implements ProgramMethodInt{
 	}
 	
 	/**
-	 * Method createTransition will make the specified node fade in during a select amount of time.
-	 * @param duration		time for fade to fill in
-	 * @param node			node to fade in
-	 * @param opacity		opacity for fade to fill to
+	 * Method toggleDateTimePicker will display nodes for user to enter in date and time manually.
+	 * @param wantToDisplay	t = show picker; f = don't show picker
 	 */
-	public void createTransition(Duration duration, Node node, double opacity){
-		FadeTransition fade = new FadeTransition(duration, node);
-		fade.setFromValue(0.0);
-		fade.setToValue(opacity);
-		fade.play();
-	}
-	
-	/**
-	 * Method addLine adds the specified text within the specified file.
-	 * @param file			the file to be modified
-	 * @param text			the text to be deleted from specified file
-	 */
-	public void addLine(File file, String text) {
-		try {									//re-add everything into the file except the excluded line of text
-			FileWriter fw = new FileWriter(file, true);			//need to add statement true to append or else it will just overwrite entire file's content
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(bw);
+	public void toggleDateTimePicker(boolean wantToDisplay) {
+		if (wantToDisplay == true) {
 			
-			pw.println(text);
+			Label semi = label(":",0,0,"label2",0,0,550,100,null,null,null,null);
+			semi.styleProperty().bind(hours.styleProperty());
+			semi.layoutXProperty().bind(hours.layoutXProperty().add(hours.widthProperty().multiply(1.04)));
+			semi.layoutYProperty().bind(hours.layoutYProperty().add(hours.heightProperty().divide(4)));
 			
-			pw.close();
-			bw.close();
-			fw.close();
-		}catch(IOException e) {e.printStackTrace();}
-	}
-	
-	/**
-	 * Method deleteLine deletes the specified text within the specified file.
-	 * @param file			the file to be modified
-	 * @param text			the text to be deleted from specified file
-	 */
-	public void deleteLine(File file, String text) {
-		ArrayList<String> arr = new ArrayList<>();
-		try {									//create an arraylist of the lines want added with the text being excluded
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
-			String str = br.readLine();
+			Label semi2 = label(":",0,0,"label2",0,0,550,100,null,null,null,null);
+			semi2.styleProperty().bind(hours.styleProperty());
+			semi2.layoutXProperty().bind(minutes.layoutXProperty().add(minutes.widthProperty().multiply(1.04)));
+			semi2.layoutYProperty().bind(hours.layoutYProperty().add(hours.heightProperty().divide(4)));
 			
-			while (str != null) {
-				if (!str.equals(text)) {		//skips adding the name that matches text parameter
-					arr.add(str);
-				}
-				str = br.readLine();
-			}
+			createTransition(Duration.millis(1000), pickDateTime,1);
+			createTransition(Duration.millis(1000), pickDateTimeBorder,1);
+			createTransition(Duration.millis(1000), hours,1);
+			createTransition(Duration.millis(1000), minutes,1);
+			createTransition(Duration.millis(1000), seconds,1);
+			createTransition(Duration.millis(1000), datePicker,1);
+			createTransition(Duration.millis(1000), semi,1);
+			createTransition(Duration.millis(1000), semi2,1);
 			
-			br.close();
-			fr.close();
-		}catch(IOException e) {e.printStackTrace();}
-		
-		clearFile(file);		//erase everything in the file
-		
-		try {									//re-add everything into the file except the excluded line of text
-			FileWriter fw = new FileWriter(file);
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(bw);
+			add(pickDateTime);
+			add(pickDateTimeBorder);
+			add(hours);
+			add(minutes);
+			add(seconds);
+			add(datePicker);
+			add(semi);
+			add(semi2);
 			
-			for (int i = 0; i < arr.size(); i++) {
-				pw.println(arr.get(i));
-			}
+			date.setId("textfield3_2");
+		}
+		else if (wantToDisplay == false) {
 			
-			pw.close();
-			bw.close();
-			fw.close();
-		}catch(IOException e) {e.printStackTrace();}
-	}
-	
-	/**
-	 * Method clearFolder is a helper method solely to erase all files in the deleted directory only.
-	 * @param directory
-	 */
-	public void clearFolder() {
-		ArrayList<String> arr = new ArrayList<>();
-		try {									//create an arraylist of the lines want added with the text being excluded
-			FileReader fr = new FileReader(deletedFile);
-			BufferedReader br = new BufferedReader(fr);
-			String str = br.readLine();
+			root.getChildren().remove(pickDateTime);
+			root.getChildren().remove(pickDateTimeBorder);
+			root.getChildren().remove(hours);
+			root.getChildren().remove(minutes);
+			root.getChildren().remove(seconds);
+			root.getChildren().remove(datePicker);
+			root.getChildren().remove(root.getChildren().size()-1);
+			root.getChildren().remove(root.getChildren().size()-1);
 			
-			while (str != null) {
-				arr.add(str);
-				str = br.readLine();
-			}
-			
-			br.close();
-			fr.close();
-		}catch(IOException e) {e.printStackTrace();}
-		
-		for (int i = 0; i < arr.size(); i++) {
-			File file = new File("src/fileDB/deletedFiles/" + arr.get(i));
-			file.delete();
+			date.setId("textfield3");
 		}
 	}
 	
-	/**
-	 * Method autoSave will directly save the contents of the entry into a file txt and can be applied once user clicks on closing the application.
-	 */
-	public void autoSave() {
-		String data = entryPath.toString();
-		data = data.substring(22, data.length());		//just the txt file name
-		
-		File folderFile = new File("src/fileDB/savedFiles/" + data);		//if not auto save then delete default titleless draft
-		folderFile.delete();
-		deleteLine(savedFile, data);										//also delete it from savedFile txt
-		
-		
-		if (date.getText().length() != 20 || !checkValidDate(date.getText())) {		//if user doesn't put in valid date just replace with current date of editing
-			todayDate = setDateTime();
-		}
-		data = data.replace(data.substring(data.length()-24, data.length()-4), todayDate);	//set date/time
-		if (data.length()-24 == 0) {															//add the new title
-			data = title.getText() + data;
-		}
-		else {
-			data = data.replace(data.substring(0, data.length()-24),title.getText());
-		}
-		
-		file = new File("src/fileDB/savedFiles/" + data);					//create the new updated file with name/date
-		addLine(savedFile, data);											//also add it to savedFile txt
-		
-		try {												//add content to file
-			FileWriter fw = new FileWriter(file);			//file = "something.txt"
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(bw);
-			
-			clearFile(file);
-			pw.println(area.getText());
-			
-			pw.close();
-			bw.close();
-			fw.close();
-			
-		}catch(IOException e) {e.printStackTrace();}
-	}
-	
-	/**
-	 * Method setDateTime will get user's current date and time.
-	 * @return str		the time + date in a string
-	 */
-	public String setDateTime() {
-		String date = LocalDate.now().toString();
-		String time = LocalTime.now().toString();
-		time = "[" + time.substring(0,2) + "." + time.substring(3,5) + "." + time.substring(6,8) + "]";
-		String str = time + date;
-		return str;
-	}
-	
-	/**
-	 * Method checkValidDate checks with the date that the user input is valid or not.
-	 * @param string	string to back checked
-	 * @return tF		true = good to go, false = replace date with current date
-	 */
-	public boolean checkValidDate(String string) {
-		boolean tF = true;
-		String validChar = "[].-1234567890";
-		for (int i = 0; i < string.length(); i++) {
-			if (!validChar.contains(string.substring(i,i+1))){		//check if all characters are valid or not one character at a time
-				tF = false;
-				i = string.length();			//break loop if found false character
-			}
-		}
-		if (tF == true) {			//check to make sure there are exactly 14 numbers
-			validChar = string;
-			validChar = validChar.replace("[","");
-			validChar = validChar.replace("]","");
-			validChar = validChar.replace("-","");
-			validChar = validChar.replace(".","");
-			if (validChar.length() != 14) {
-				tF = false;
-			}
-		}
-		return tF;
-	}
-	
-	/**
-	 * Method cancelSave will save the draft that user cancelled on in case they want to recover it during the session; otherwise, it will be autodeleted.
-	 */
-	public void cancelSave() {
-		File file = new File(entryPath.toString());
-		deleteLine(savedFile, entryPath.toString().substring(22, entryPath.toString().length()));	//delete the entry within saved folder
-		
-		if (date.getText().length() != 20 || !checkValidDate(date.getText())) {		//if current date by user is not 20 length or contains invalid characters then set to current date/time
-			todayDate = setDateTime();
-		}
-		fileTitle = title.getText() + entryPath.toString().substring(22,entryPath.toString().length()-24) + todayDate + ".txt";
-		try {												//add content to file
-			FileWriter fw = new FileWriter(file);			//file = "something.txt"
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(bw);
-			
-			clearFile(file);
-			pw.println(area.getText());
-			
-			pw.close();
-			bw.close();
-			fw.close();
-			
-		}catch(IOException e) {e.printStackTrace();}
-		
-		file.renameTo(new File("src/fileDB/deletedFiles/"  + fileTitle));			//move to deleted files to allow for chance of recovery. All deleted entires will be permanantly deleted when user closes application.
-
-		addLine(deletedFile, fileTitle);	//add the entry within the deleted folder
-	}
 }
